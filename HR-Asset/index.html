@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Asset Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* Global Reset and Variables */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #1e40af;
+    --success-color: #16a34a;
+    --danger-color: #dc2626;
+    --warning-color: #d97706;
+    --background-color: #f8fafc;
+    --text-color: #1e293b;
+    --border-color: #e2e8f0;
+    --transition-speed: 0.3s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Container and Layout */
+.container {
+    width: 100%;
+    padding: 2rem;
+}
+
+.hr-section {
+    background: white;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Header Styles */
+.header {
+    background: linear-gradient(135deg, #3b82f6, #0ea5e9);
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-top-right-radius: 12px;
+    border-top-left-radius: 12px;
+}
+
+.logo {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    animation: slideDown 0.5s ease-out;
+}
+
+.tagline {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+/* Filters Section */
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    margin-top: 15px;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    align-items: center;
+    width: 100%;
+}
+
+#searchInput {
+    padding: 8px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease;
+    flex: 1;
+    min-width: 200px;
+    max-width: 100%;
+}
+
+#searchInput::placeholder {
+    color: #999;
+}
+
+#searchInput:hover {
+    border-color: #007bff;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #0056b3;
+}
+
+select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all var(--transition-speed);
+    min-width: 160px;
+    max-width: 200px;
+    flex: 0 0 auto;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-clear {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.requests-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.requests-table th,
+.requests-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.requests-table th {
+    background: #f8fafc;
+    background-color: var(--primary-color);
+    font-weight: 600;
+    color: white;
+}
+
+.requests-table tr {
+    transition: background-color var(--transition-speed);
+}
+
+.requests-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* Checkbox Styles */
+.checkbox-cell {
+    width: 40px; /* Fixed width for consistency */
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5rem; /* Reduced padding for better alignment */
+}
+
+.checkbox-header {
+    width: 40px; /* Match checkbox-cell width */
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5rem; /* Consistent padding */
+}
+
+.checkbox-header input,
+.checkbox-cell input {
+    width: 16px;
+    height: 16px;
+    margin: 0 auto; /* Center the checkbox */
+    display: block; /* Ensure block-level for centering */
+    cursor: pointer;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-approved {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all var(--transition-speed);
+}
+
+.btn i {
+    font-size: 0.9em;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #15803d;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    position: relative;
+    background-color: white;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    border-radius: 12px;
+    max-width: 650px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.3s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.close:hover {
+    color: var(--danger-color);
+    background-color: rgba(220, 38, 38, 0.1);
+    transform: rotate(90deg);
+}
+
+/* Request Details Styles */
+.detail-ro {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    gap: 5.5rem;
+}
+
+.detail-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.detail-row strong {
+    flex: 0 0 150px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.detail-row span,
+.detail-row p {
+    flex: 1;
+    color: #1e293b;
+}
+
+.reason-text {
+    margin-top: 0.5rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 70%;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+/* Claim History Styles */
+.claim-history {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--border-color);
+}
+
+.claim-history h3 {
+    margin-bottom: 15px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.history-item {
+    padding: 16px;
+    margin: 15px 0;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #3b82f6;
+}
+
+.history-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.history-item p {
+    margin: 8px 0;
+    color: #4b5563;
+}
+
+.history-item p strong {
+    color: #1e293b;
+    margin-right: 5px;
+}
+
+/* Additional animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+    from { 
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.premium-notification-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    max-width: 400px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.premium-notification {
+    display: flex;
+    align-items: stretch;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    width: 100%;
+    max-width: 350px;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                opacity 0.3s ease;
+    position: relative;
+}
+
+.premium-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.premium-notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    font-size: 24px;
+}
+
+.premium-notification-icon.success { background-color: #10b981; color: white; }
+.premium-notification-icon.error { background-color: #ef4444; color: white; }
+.premium-notification-icon.info { background-color: #3b82f6; color: white; }
+.premium-notification-icon.warning { background-color: #f59e0b; color: white; }
+
+.premium-notification-content {
+    padding: 15px;
+    flex-grow: 1;
+}
+
+.premium-notification-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #1e293b;
+}
+
+.premium-notification-message {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.premium-notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    transform-origin: left;
+    animation: progress-shrink 3s linear forwards;
+}
+
+.premium-notification-progress.success { background-color: #10b981; }
+.premium-notification-progress.error { background-color: #ef4444; }
+.premium-notification-progress.info { background-color: #3b82f6; }
+.premium-notification-progress.warning { background-color: #f59e0b; }
+
+@keyframes progress-shrink {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Premium Confirmation Dialog */
+.premium-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.premium-confirm-overlay.show {
+    opacity: 1;
+}
+
+.premium-confirm-box {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.premium-confirm-overlay.show .premium-confirm-box {
+    transform: scale(1);
+}
+
+.premium-confirm-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.premium-confirm-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #1e293b;
+}
+
+.premium-confirm-message {
+    color: #64748b;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.premium-confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.premium-confirm-button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.premium-confirm-button.confirm {
+    background-color: #2563eb;
+    color: white;
+}
+
+.premium-confirm-button.confirm:hover {
+    background-color: #1d4ed8;
+}
+
+.premium-confirm-button.cancel {
+    background-color: #e5e7eb;
+    color: #4b5563;
+}
+
+.premium-confirm-button.cancel:hover {
+    background-color: #d1d5db;
+}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 4px;
+    background: #4CAF50;
+    color: white;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.notification.error {
+    background: #f44336;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-1rem);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(1rem);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .filters {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    #searchInput {
+        max-width: 100%;
+        min-width: 150px;
+    }
+
+    select {
+        max-width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .hr-section {
+        padding: 1rem;
+    }
+    
+    .list-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .logo {
+        font-size: 2rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 1rem auto;
+    }
+    
+    .detail-row, .detail-ro {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .detail-row strong, .detail-ro strong {
+        flex: none;
+        margin-bottom: 5px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .premium-notification {
+        max-width: 300px;
+    }
+    
+    .premium-confirm-box {
+        padding: 20px;
+    }
+    
+    .reason-text {
+        max-width: 100%;
+    }
+    
+    #searchInput {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    select {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    .btn-clear {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .btn, .filters, .notification {
+        display: none;
+    }
+    
+    .container {
+        padding: 0;
+    }
+    
+    .hr-section {
+        box-shadow: none;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">HR ASSET MANAGEMENT</h1>
+        </header>
+        <section class="hr-section">
+            <div class="requests-list">
+                <div class="list-header">
+                    <div class="filters">
+                        <select id="statusFilter" onchange="filterRequests()">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="Search by Employee ID" onkeyup="filterRequests()">
+                        <button onclick="clearSelectedRecords()" class="btn btn-danger btn-clear">Clear Selected Records</button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="requests-table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-header">
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                </th>
+                                <th>Request ID</th>
+                                <th>Employee ID</th>
+                                <th>Asset Type</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Updated Modal -->
+        <div id="detailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeDetailsModal()">×</span>
+                <h2 style="margin-bottom: 10px;">Request Details</h2><hr style="margin-bottom: 20px;">
+                <div id="requestDetails" class="request-details">
+                </div>
+                <div id="actionButtons" class="action-buttons">
+                    <!-- Buttons will be added dynamically -->
+                </div>
+                <div id="claimHistory" class="claim-history">
+                    <h3>Claim History</h3>
+                    <div id="historyContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+// Base URL for API
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// Initialize global variables
+let requests = [];
+let selectedRequestId = null;
+let isClearing = false; // Flag to prevent duplicate alerts
+
+// Initialize page when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    loadRequests();
+    setupEventListeners();
+});
+
+// Setup all event listeners
+function setupEventListeners() {
+    const statusFilter = document.getElementById('statusFilter');
+    if (statusFilter) {
+        statusFilter.addEventListener('change', filterRequests);
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', filterRequests);
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('detailsModal');
+        if (event.target === modal) {
+            closeDetailsModal();
+        }
+    };
+}
+
+async function loadRequests(forceIncludeId = null) {
+    const tableBody = document.getElementById('requestsTableBody');
+    const statusFilter = document.getElementById('statusFilter').value;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+    try {
+        // Fetch requests from API
+        console.log('Fetching requests from API:', `${API_BASE_URL}/requests`);
+        const response = await fetch(`${API_BASE_URL}/requests`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}, Message: ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log('Raw API response:', data);
+
+        // Ensure the response is an array
+        if (!Array.isArray(data)) {
+            throw new Error('API response is not an array');
+        }
+
+        requests = data;
+        console.log('Processed requests:', requests);
+
+        // If no requests are returned, log a warning
+        if (requests.length === 0) {
+            console.warn('No requests found in API response');
+        }
+
+        let filteredRequests = [...requests];
+
+        // Apply status filter, but bypass for the forceIncludeId
+        if (statusFilter !== 'all') {
+            filteredRequests = filteredRequests.filter(r =>
+                r.status === statusFilter || (forceIncludeId && r.id === forceIncludeId)
+            );
+        }
+
+        // Apply search filter
+        if (searchTerm) {
+            filteredRequests = filteredRequests.filter(r =>
+                r.employee_id.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Sort by request date (descending)
+        filteredRequests.sort((a, b) => new Date(b.request_date) - new Date(a.request_date));
+
+        tableBody.innerHTML = '';
+
+        if (filteredRequests.length === 0) {
+            console.log('No filtered requests to display');
+            const noRecordsRow = document.createElement('tr');
+            noRecordsRow.innerHTML = `
+                <td colspan="7" style="text-align: center; padding: 2rem;">
+                    <div style="color: #64748b; font-size: 1.1rem;">
+                        <i class="fas fa-search" style="margin-right: 10px;"></i>
+                        No Records Found
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(noRecordsRow);
+            document.getElementById('selectAll').checked = false;
+            return;
+        }
+
+        console.log('Filtered requests to display:', filteredRequests);
+        filteredRequests.forEach(request => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="checkbox-cell">
+                    <input type="checkbox" class="row-checkbox" data-id="${request.id}" onchange="updateSelectAll()">
+                </td>
+                <td>${request.id}</td>
+                <td>${request.employee_id}</td>
+                <td>
+                    <i class="fas fa-${getAssetIcon(request.asset_type)}"></i>
+                    ${capitalizeFirstLetter(request.asset_type)}
+                </td>
+                <td>${formatDate(request.request_date)}</td>
+                <td><span class="status-badge status-${request.status}">${capitalizeFirstLetter(request.status)}</span></td>
+                <td>
+                    <button onclick="viewRequest('${request.id}')" class="btn btn-primary btn-sm">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        updateSelectAll();
+    } catch (error) {
+        console.error('Error loading requests:', error.message);
+        showNotification({
+            title: 'Error',
+            message: `Failed to load requests: ${error.message}. Please check the API and try again.`,
+            type: 'error'
+        });
+    }
+}
+
+function toggleSelectAll() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.checked = selectAllCheckbox.checked;
+    });
+}
+
+function updateSelectAll() {
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const checkedCount = Array.from(rowCheckboxes).filter(cb => cb.checked).length;
+    selectAllCheckbox.checked = checkedCount === rowCheckboxes.length && rowCheckboxes.length > 0;
+    selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < rowCheckboxes.length;
+}
+
+function viewRequest(requestId) {
+    console.log('viewRequest called with ID:', requestId);
+    selectedRequestId = requestId;
+    const request = requests.find(r => r.id === String(requestId));
+
+    if (!request) {
+        console.error(`Request with ID ${requestId} not found in requests array`);
+        showNotification({
+            title: 'Error',
+            message: `Request with ID ${requestId} not found. It may have been deleted or not loaded.`,
+            type: 'error'
+        });
+        return;
+    }
+
+    try {
+        const detailsDiv = document.getElementById('requestDetails');
+        detailsDiv.innerHTML = `
+            <div class="detail-row">
+                <strong>Request ID:</strong>
+                <span>${request.id}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Employee ID:</strong>
+                <span>${request.employee_id}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Asset Type:</strong>
+                <span>
+                    <i class="fas fa-${getAssetIcon(request.asset_type)}"></i>
+                    ${capitalizeFirstLetter(request.asset_type)}
+                </span>
+            </div>
+            <div class="detail-row">
+                <strong>Request Date:</strong>
+                <span>${formatDate(request.request_date)}</span>
+            </div>
+            <div class="detail-ro">
+                <strong>Status:</strong>
+                <span class="status-badge status-${request.status}">
+                    ${capitalizeFirstLetter(request.status)}
+                </span>
+            </div>
+            <div class="detail-row">
+                <strong>Reason:</strong>
+                <p class="reason-text">${request.reason || 'No reason provided'}</p>
+            </div>
+        `;
+
+        displayClaimHistory(request.employee_id);
+
+        const actionButtons = document.getElementById('actionButtons');
+        if (request.status === 'pending') {
+            actionButtons.innerHTML = `
+                <button onclick="approveRequest()" class="btn btn-success">
+                    <i class="fas fa-check"></i> Approve
+                </button>
+                <button onclick="rejectRequest()" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Reject
+                </button>
+            `;
+        } else {
+            actionButtons.innerHTML = `
+                <div class="status-message">
+                    This request has been ${request.status}
+                </div>
+            `;
+        }
+
+        document.getElementById('detailsModal').style.display = 'block';
+    } catch (error) {
+        console.error('Error displaying request details:', error);
+        showNotification({
+            title: 'Error',
+            message: 'Failed to display request details.',
+            type: 'error'
+        });
+    }
+}
+
+async function displayClaimHistory(employeeId) {
+    const historyContent = document.getElementById('historyContent');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests/history/${employeeId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}, Message: ${response.statusText}`);
+        }
+        const employeeRequests = await response.json();
+        console.log('Claim history for employee ID', employeeId, ':', employeeRequests);
+
+        if (employeeRequests.length === 0) {
+            historyContent.innerHTML = '<p>No claim history found</p>';
+            return;
+        }
+
+        historyContent.innerHTML = employeeRequests
+            .sort((a, b) => new Date(b.request_date) - new Date(a.request_date))
+            .map(request => `
+                <div class="history-item">
+                    <p><strong>Request ID:</strong> ${request.id}</p>
+                    <p><strong>Asset:</strong> ${capitalizeFirstLetter(request.asset_type)}</p>
+                    <p><strong>Date:</strong> ${formatDate(request.request_date)}</p>
+                    <p><strong>Status:</strong> 
+                        <span class="status-badge status-${request.status}">
+                            ${capitalizeFirstLetter(request.status)}
+                        </span>
+                    </p>
+                </div>
+            `).join('');
+    } catch (error) {
+        console.error('Error fetching claim history:', error.message);
+        historyContent.innerHTML = '<p>Failed to load claim history</p>';
+    }
+}
+
+async function updateRequestStatus(status) {
+    const title = status === 'approved' ? 'Approve Request' : 'Reject Request';
+    const message = status === 'approved'
+        ? 'Are you sure you want to approve this request?'
+        : 'Are you sure you want to reject this request?';
+
+    showPremiumConfirmation({
+        title: title,
+        message: message,
+        icon: status === 'approved' ? 'check-circle' : 'times-circle',
+        iconType: status === 'approved' ? 'success' : 'error',
+        confirmText: 'Yes, proceed',
+        cancelText: 'Cancel',
+        onConfirm: async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/requests/${selectedRequestId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}, Message: ${response.statusText}`);
+                }
+
+                const updatedRequest = await response.json();
+                console.log('Updated request:', updatedRequest);
+
+                // Update the requests array with the updated request
+                requests = requests.map(r => r.id === updatedRequest.id ? updatedRequest : r);
+                console.log('Updated requests array:', requests);
+
+                // Reload the table, ensuring the updated request is included
+                await loadRequests(selectedRequestId);
+                viewRequest(selectedRequestId);
+
+                showNotification({
+                    title: status === 'approved' ? 'Request Approved' : 'Request Rejected',
+                    message: `The request has been ${status} successfully.`,
+                    type: status === 'approved' ? 'success' : 'info'
+                });
+            } catch (error) {
+                console.error('Error updating request:', error.message);
+                showNotification({
+                    title: 'Error',
+                    message: error.message || 'Failed to update request status.',
+                    type: 'error'
+                });
+            }
+        }
+    });
+}
+
+function approveRequest() {
+    updateRequestStatus('approved');
+}
+
+function rejectRequest() {
+    updateRequestStatus('rejected');
+}
+
+async function clearSelectedRecords() {
+    if (isClearing) return;
+
+    isClearing = true;
+
+    const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
+        showNotification({
+            title: 'No Records Selected',
+            message: 'Please select at least one record to clear.',
+            type: 'warning'
+        });
+        isClearing = false;
+        return;
+    }
+
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.dataset.id));
+
+    showPremiumConfirmation({
+        title: 'Clear Selected Records',
+        message: `Are you sure you want to clear ${selectedCheckboxes.length} selected record(s)? This action cannot be undone.`,
+        icon: 'exclamation-triangle',
+        iconType: 'warning',
+        confirmText: 'Yes, clear selected',
+        cancelText: 'Cancel',
+        onConfirm: async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/requests`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ids: selectedIds })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}, Message: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                await loadRequests();
+
+                showNotification({
+                    title: 'Records Deleted',
+                    message: result.message || `${selectedCheckboxes.length} record(s) have been permanently deleted.`,
+                    type: 'success'
+                });
+            } catch (error) {
+                console.error('Error clearing requests:', error.message);
+                showNotification({
+                    title: 'Error',
+                    message: error.message || 'Failed to clear selected records.',
+                    type: 'error'
+                });
+            } finally {
+                isClearing = false;
+            }
+        },
+        onCancel: () => {
+            setTimeout(() => {
+                isClearing = false;
+            }, 500);
+        }
+    });
+}
+
+function closeDetailsModal() {
+    document.getElementById('detailsModal').style.display = 'none';
+    selectedRequestId = null;
+}
+
+function filterRequests() {
+    loadRequests();
+}
+
+// Utility Functions
+function getAssetIcon(assetType) {
+    const icons = {
+        laptop: 'laptop',
+        monitor: 'desktop',
+        keyboard: 'keyboard',
+        mouse: 'mouse',
+        headphones: 'headphones',
+        chair: 'chair',
+        phone: 'mobile-alt',
+        tablet: 'tablet-alt'
+    };
+    return icons[assetType] || 'question';
+}
+
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Premium notification function
+function showNotification(options) {
+    if (typeof options === 'string') {
+        options = { message: options, type: 'success' };
+    }
+
+    const { title, message, type = 'success', duration = 3000 } = options;
+
+    let container = document.querySelector('.premium-notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'premium-notification-container';
+        document.body.appendChild(container);
+    }
+
+    const notification = document.createElement('div');
+    notification.className = 'premium-notification ' + type;
+
+    let iconClass;
+    switch (type) {
+        case 'success':
+            iconClass = 'check-circle';
+            break;
+        case 'error':
+            iconClass = 'exclamation-circle';
+            break;
+        case 'info':
+            iconClass = 'info-circle';
+            break;
+        case 'warning':
+            iconClass = 'exclamation-triangle';
+            break;
+        default:
+            iconClass = 'bell';
+    }
+
+    notification.innerHTML = `
+        <div class="premium-notification-icon ${type}">
+            <i class="fas fa-${iconClass}"></i>
+        </div>
+        <div class="premium-notification-content">
+            ${title ? `<div class="premium-notification-title">${title}</div>` : ''}
+            <div class="premium-notification-message">${message}</div>
+        </div>
+        <div class="premium-notification-progress ${type}"></div>
+    `;
+
+    container.appendChild(notification);
+
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 400);
+    }, duration);
+
+    notification.addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 400);
+    });
+}
+
+// Premium confirmation dialog
+function showPremiumConfirmation(options) {
+    const {
+        title = 'Confirmation',
+        message = 'Are you sure you want to proceed?',
+        icon = 'question-circle',
+        iconType = 'info',
+        confirmText = 'Confirm',
+        cancelText = 'Cancel',
+        onConfirm = () => {},
+        onCancel = () => {}
+    } = options;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'premium-confirm-overlay';
+
+    const confirmBox = document.createElement('div');
+    confirmBox.className = 'premium-confirm-box';
+
+    confirmBox.innerHTML = `
+        <div class="premium-confirm-icon" style="color: ${getIconColor(iconType)}">
+            <i class="fas fa-${icon}"></i>
+        </div>
+        <div class="premium-confirm-title">${title}</div>
+        <div class="premium-confirm-message">${message}</div>
+        <div class="premium-confirm-buttons">
+            <button class="premium-confirm-button confirm">
+                <i class="fas fa-check"></i> ${confirmText}
+            </button>
+            <button class="premium-confirm-button cancel">
+                <i class="fas fa-times"></i> ${cancelText}
+            </button>
+        </div>
+    `;
+
+    overlay.appendChild(confirmBox);
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+        overlay.classList.add('show');
+    }, 10);
+
+    const confirmButton = confirmBox.querySelector('.premium-confirm-button.confirm');
+    const cancelButton = confirmBox.querySelector('.premium-confirm-button.cancel');
+
+    confirmButton.addEventListener('click', () => {
+        closeConfirm();
+        onConfirm();
+    });
+
+    cancelButton.addEventListener('click', () => {
+        closeConfirm();
+        onCancel();
+    });
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeConfirm();
+            onCancel();
+        }
+    });
+
+    function closeConfirm() {
+        overlay.classList.remove('show');
+        setTimeout(() => {
+            overlay.remove();
+        }, 300);
+    }
+
+    function getIconColor(type) {
+        switch (type) {
+            case 'success': return '#10b981';
+            case 'error': return '#ef4444';
+            case 'warning': return '#f59e0b';
+            case 'info': return '#3b82f6';
+            default: return '#3b82f6';
+        }
+    }
+}
+    </script>
+</body>
+</html>

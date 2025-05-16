@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assets - Asset Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Existing CSS remains unchanged */
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0.5rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgb(65, 44, 255);
+            border-radius: 0rem;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .tagline {
+            color: var(--gray-700);
+            font-size: 1.125rem;
+        }
+
+        .assets-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .asset-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
+        }
+
+        .asset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .asset-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .asset-card:hover .asset-icon {
+            transform: scale(1.1);
+        }
+
+        .asset-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gray-900);
+        }
+
+        .asset-details {
+            font-size: 0.875rem;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-assigned {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-available {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .status-pending {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .status-rejected {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .close {
+            cursor: pointer;
+            float: right;
+        }
+
+        .close:hover {
+            color: #ef4444;
+            border-style: groove;
+        }
+
+        .requests-list {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .requests-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+        }
+
+        .requests-table th {
+            background-color: var(--gray-100);
+            padding: 1rem;
+            font-weight: 600;
+            text-align: left;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .requests-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            transition: background-color 0.2s ease;
+        }
+
+        .requests-table tr:hover td {
+            background-color: var(--gray-50);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        #reason {
+            resize: none;
+        }
+
+        .char-counter {
+            position: absolute;
+            top: 75px;
+            bottom: 10px;
+            right: 5px;
+            font-size: 0.75rem;
+            color: var(--gray-700);
+        }
+
+        .error-text {
+            color: var(--danger);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        input.error, select.error, textarea.error {
+            border-color: var(--danger);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .request-details {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .request-details p {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .request-details strong {
+            color: var(--gray-700);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .assets-list {
+                grid-template-columns: 1fr;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .assets-title {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .requests-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .modal-content {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            input, select, textarea {
+                font-size: 0.875rem;
+                padding: 1rem;
+            }
+            
+            .form.Caseactions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="assets-section">
+            <header class="header">
+                <h1 class="logo">ASSET MANAGEMENT</h1>
+            </header>
+            <div class="action-bar">
+                <h2 class="assets-title">My Assets</h2>
+                <button class="btn btn-primary" onclick="openRequestForm()">
+                    <i class="fas fa-plus" style="margin-right: 5px;"></i>
+                    Request Asset
+                </button>
+            </div>
+            <div class="assets-list">
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h3 class="asset-name">Laptop</h3>
+                    <p class="asset-details">MacBook Pro 16"</p>
+                    <p class="asset-details">Serial: MBP2023-1234</p>
+                    <p class="status-badge status-assigned">Assigned</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3 class="asset-name">Monitor</h3>
+                    <p class="asset-details">Dell 27" 4K</p>
+                    <p class="asset-details">Serial: DEL2023-5678</p>
+                    <p class="status-badge status-assigned">Assigned</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <h3 class="asset-name">Keyboard</h3>
+                    <p class="asset-details">Logitech MX Keys</p>
+                    <p class="asset-details">Serial: LOG2023-9012</p>
+                    <p class="status-badge status-assigned">Assigned</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-mouse"></i>
+                    </div>
+                    <h3 class="asset-name">Mouse</h3>
+                    <p class="asset-details">Logitech MX Master 3</p>
+                    <p class="asset-detailsBizSerial: LOG2023-3456</p>
+                    <p class="status-badge status-available">Available</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-headphones"></i>
+                    </div>
+                    <h3 class="asset-name">Headphones</h3>
+                    <p class="asset-details">Sony WH-1000XM4</p>
+                    <p class="asset-details">Serial: SNY2023-7890</p>
+                    <p class="status-badge status-assigned">Assigned</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-chair"></i>
+                    </div>
+                    <h3 class="asset-name">Office Chair</h3>
+                    <p class="asset-details">Herman Miller Aeron</p>
+                    <p class="asset-details">Serial: HM2023-4321</p>
+                    <p class="status-badge status-assigned">Assigned</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="asset-name">Phone</h3>
+                    <p class="asset-details">iPhone 14 Pro</p>
+                    <p class="asset-details">Serial: IPH2023-8765</p>
+                    <p class="status-badge status-available">Available</p>
+                </div>
+                <div class="asset-card">
+                    <div class="asset-icon">
+                        <i class="fas fa-tablet-alt"></i>
+                    </div>
+                    <h3 class="asset-name">Tablet</h3>
+                    <p class="asset-details">iPad Pro 12.9"</p>
+                    <p class="asset-details">Serial: IPD2023-6543</p>
+                    <p class="status-badge status-available">Available</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Asset Request Form Modal -->
+        <div id="requestModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeRequestForm()">×</span>
+                <h2>Request New Asset</h2>
+                <form id="assetRequestForm" onsubmit="submitRequest(event)"><hr style="margin-top: 10px; margin-bottom: 10px;border: 1px solid #e5e7eb;">
+                    <div class="form-group">
+                        <label for="employeeId">Employee ID</label>
+                        <input type="text" id="employeeId" placeholder="Enter your employee ID">
+                        <div id="employeeIdError" class="error-text">Please enter a valid Employee ID (format: ATS0XXX).</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="assetType">Asset Type</label>
+                        <select id="assetType">
+                            <option value="">Select Asset Type</option>
+                            <option value="laptop">Laptop</option>
+                            <option value="monitor">Monitor</option>
+                            <option value="keyboard">Keyboard</option>
+                            <option value="mouse">Mouse</option>
+                            <option value="headphones">Headphones</option>
+                            <option value="chair">Office Chair</option>
+                            <option value="phone">Phone</option>
+                            <option value="tablet">Tablet</option>
+                        </select>
+                        <div id="assetTypeError" class="error-text">Please select an asset type.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reason">Reason for Request</label>
+                        <textarea id="reason" placeholder="Please provide a detailed reason for your request" maxlength="300"></textarea>
+                        <div class="char-counter"><span id="charCount">0</span>/300</div>
+                        <div id="reasonError" class="error-text">Please enter a valid reason (minimum 5 letters, allowed: letters, numbers, spaces, ., ,, ?, @, &, (), [], \, |, /).</div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                        <button type="button" class="btn btn-danger" onclick="closeRequestForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<script>
+    const API_URL = 'http://localhost:3000/api';
+
+    function openRequestForm() {
+        document.getElementById('requestModal').style.display = 'block';
+        resetFormErrors();
+        updateAssetTypeOptions();
+    }
+
+    function closeRequestForm() {
+        document.getElementById('requestModal').style.display = 'none';
+        document.getElementById('assetRequestForm').reset();
+        resetFormErrors();
+        updateCharCount();
+    }
+
+    function resetFormErrors() {
+        const errorElements = document.querySelectorAll('.error-text');
+        const inputElements = document.querySelectorAll('input, select, textarea');
+        
+        errorElements.forEach(element => {
+            element.style.display = 'none';
+        });
+        
+        inputElements.forEach(element => {
+            element.classList.remove('error');
+        });
+    }
+
+    function showError(elementId, message) {
+        const errorElement = document.getElementById(elementId + 'Error');
+        const inputElement = document.getElementById(elementId);
+        
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        if (inputElement) {
+            inputElement.classList.add('error');
+        }
+        
+        return false;
+    }
+
+    function hideError(elementId) {
+        const errorElement = document.getElementById(elementId + 'Error');
+        const inputElement = document.getElementById(elementId);
+        
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+        
+        if (inputElement) {
+            inputElement.classList.remove('error');
+        }
+    }
+
+    function validateEmployeeId(employeeId) {
+        const idRegex = /^ATS0(?!000)\d{3}$/;
+        
+        if (!employeeId) {
+            return showError('employeeId', 'Employee ID is required.');
+        }
+        
+        if (!idRegex.test(employeeId)) {
+            return showError('employeeId', 'Employee ID must follow the format ATS0XXX where X is a digit.');
+        }
+        
+        hideError('employeeId');
+        return true;
+    }
+
+    function validateAssetType(assetType) {
+        if (!assetType) {
+            return showError('assetType', 'Please select an asset type.');
+        }
+        
+        hideError('assetType');
+        return true;
+    }
+
+    function validateReason(reason) {
+        if (!reason || reason.trim().length === 0) {
+            return showError('reason', 'Reason for request is required.');
+        }
+        
+        if (/\s{2,}/.test(reason)) {
+            return showError('reason', 'Multiple consecutive spaces are not allowed.');
+        }
+        
+        const letterCount = reason.replace(/[^A-Za-z]/g, '').length;
+        if (letterCount < 5) {
+            return showError('reason', 'Reason must contain at least 5 letters.');
+        }
+        
+        if (!/^[A-Za-z0-9\s.,?@&()[\]\\|\/'"]+$/.test(reason)) {
+            return showError('reason', 'Reason contains invalid characters. Allowed: letters, numbers, spaces, ., ,, ?, @, &, (), [], \\, |, /, \', "');
+        }
+        hideError('reason');
+        return true;
+    }
+
+    async function updateAssetTypeOptions() {
+        const employeeId = document.getElementById('employeeId').value;
+        const assetTypeSelect = document.getElementById('assetType');
+        const currentTime = new Date();
+        
+        const allAssetTypes = [
+            { value: 'laptop', text: 'Laptop' },
+            { value: 'monitor', text: 'Monitor' },
+            { value: 'keyboard', text: 'Keyboard' },
+            { value: 'mouse', text: 'Mouse' },
+            { value: 'headphones', text: 'Headphones' },
+            { value: 'chair', text: 'Office Chair' },
+            { value: 'phone', text: 'Phone' },
+            { value: 'tablet', text: 'Tablet' }
+        ];
+
+        let restrictedAssetTypes = [];
+        let restrictionMessage = '';
+        
+        if (validateEmployeeId(employeeId)) {
+            try {
+                const response = await fetch(`${API_URL}/requests`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch requests');
+                }
+                const requests = await response.json();
+                
+                // Filter requests from the last 24 hours
+                restrictedAssetTypes = requests
+                    .filter(req => req.employee_id === employeeId && req.is_active)
+                    .filter(req => {
+                        const requestTime = new Date(req.request_date);
+                        const timeDiff = (currentTime - requestTime) / (1000 * 60 * 60); // Hours
+                        return timeDiff < 24;
+                    })
+                    .map(req => req.asset_type);
+
+                if (restrictedAssetTypes.length > 0) {
+                    restrictionMessage = `Note: Some asset types (${restrictedAssetTypes.join(', ')}) are unavailable because you requested them within the last 24 hours.`;
+                }
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+                restrictionMessage = 'Unable to load asset restrictions. Please try again later.';
+            }
+        }
+
+        // Update dropdown
+        assetTypeSelect.innerHTML = '<option value="">Select Asset Type</option>';
+        allAssetTypes.forEach(asset => {
+            if (!restrictedAssetTypes.includes(asset.value)) {
+                const option = document.createElement('option');
+                option.value = asset.value;
+                option.textContent = asset.text;
+                assetTypeSelect.appendChild(option);
+            }
+        });
+
+        // Display restriction message
+        let messageElement = document.getElementById('restrictionMessage');
+        if (!messageElement) {
+            messageElement = document.createElement('div');
+            messageElement.id = 'restrictionMessage';
+            messageElement.style.color = 'var(--warning)';
+            messageElement.style.fontSize = '0.875rem';
+            messageElement.style.marginBottom = '1rem';
+            assetTypeSelect.parentElement.appendChild(messageElement);
+        }
+        messageElement.textContent = restrictionMessage;
+    }
+
+    async function submitRequest(event) {
+        event.preventDefault();
+        
+        resetFormErrors();
+
+        const employeeId = document.getElementById('employeeId').value;
+        const assetType = document.getElementById('assetType').value;
+        const reason = document.getElementById('reason').value;
+        
+        const isEmployeeIdValid = validateEmployeeId(employeeId);
+        const isAssetTypeValid = validateAssetType(assetType);
+        const isReasonValid = validateReason(reason);
+        
+        if (!isEmployeeIdValid || !isAssetTypeValid || !isReasonValid) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/requests`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    employeeId,
+                    assetType,
+                    reason: reason.trim()
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to submit request');
+            }
+
+            document.getElementById('assetRequestForm').reset();
+            closeRequestForm();
+            alert('Request submitted successfully!');
+            updateAssetTypeOptions(); // Refresh dropdown after submission
+        } catch (error) {
+            showError('reason', error.message);
+        }
+    }
+
+    function updateCharCount() {
+        const reasonTextarea = document.getElementById('reason');
+        const charCountSpan = document.getElementById('charCount');
+        
+        if (reasonTextarea && charCountSpan) {
+            charCountSpan.textContent = reasonTextarea.value.length;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const employeeIdInput = document.getElementById('employeeId');
+        if (employeeIdInput) {
+            employeeIdInput.addEventListener('input', function() {
+                if (this.value.length <= 4) {
+                    const prefix = "ATS0";
+                    const currentValue = this.value.toUpperCase();
+                    
+                    if (prefix.startsWith(currentValue)) {
+                        this.value = prefix.substring(0, currentValue.length);
+                    } else {
+                        this.value = prefix.substring(0, this.value.length);
+                    }
+                    
+                    hideError('employeeId');
+                    return;
+                }
+                
+                if (this.value.length > 4) {
+                    const prefix = this.value.substring(0, 4);
+                    const digits = this.value.substring(4).replace(/[^\d]/g, '');
+                    const limitedDigits = digits.substring(0, 3);
+                    this.value = prefix + limitedDigits;
+                    
+                    if (validateEmployeeId(this.value)) {
+                        updateAssetTypeOptions();
+                    }
+                }
+            });
+            
+            employeeIdInput.addEventListener('keypress', function(e) {
+                if (this.value.length >= 4 && !/^\d$/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+            
+            employeeIdInput.addEventListener('blur', function() {
+                if (this.value) {
+                    if (validateEmployeeId(this.value)) {
+                        updateAssetTypeOptions();
+                    }
+                }
+            });
+        }
+        
+        const assetTypeSelect = document.getElementById('assetType');
+        if (assetTypeSelect) {
+            assetTypeSelect.addEventListener('change', function() {
+                validateAssetType(this.value);
+            });
+        }
+        
+        const reasonTextarea = document.getElementById('reason');
+        if (reasonTextarea) {
+            reasonTextarea.addEventListener('input', function() {
+                const normalizedValue = this.value.replace(/\s+/g, ' ').trimStart();
+                this.value = normalizedValue;
+
+                updateCharCount();
+                
+                const value = this.value;
+                const hasLetters = /[A-Za-z]/.test(value);
+                
+                if (value && !hasLetters) {
+                    showError('reason', 'Reason must contain at least some letters.');
+                } else if (value) {
+                    validateReason(this.value);
+                } else {
+                    hideError('reason');
+                }
+            });
+            
+            reasonTextarea.addEventListener('blur', function() {
+                if (this.value) {
+                    validateReason(this.value);
+                }
+            });
+            
+            reasonTextarea.addEventListener('keypress', function(e) {
+                if (this.value.length === 0 && e.key === ' ') {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        updateCharCount();
+    });
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('requestModal');
+        if (event.target === modal) {
+            closeRequestForm();
+        }
+    }
+</script>
+</body>
+</html>
