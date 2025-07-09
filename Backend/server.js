@@ -181,5 +181,5 @@ app.get('/api/requests/history/:employeeId', async (req, res) => {
 
 // Start server
 app.listen(port, () => {
-    console.log(`Server running at http://16.170.249.150:${port}`);
+    console.log(`Server running at http://13.60.189.220:${port}`);
 });
